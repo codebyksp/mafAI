@@ -108,7 +108,7 @@ app.post('/api/game/join', async (req: Request, res: Response) => {
   }
 });
 
-// Start the game
+// Start the game (FULL UPDATED)
 app.post('/api/game/start', async (req: Request, res: Response) => {
   try {
     const { gameCode } = req.body;
@@ -119,48 +119,111 @@ app.post('/api/game/start', async (req: Request, res: Response) => {
     if (!snapshot.exists()) return res.status(404).json({ error: 'Game not found' });
 
     const game = snapshot.val();
-    const playerIds = Object.keys(game.players);
-    if (playerIds.length < 3) return res.status(400).json({ error: 'Need at least 3 players to start' });
 
-    // Select AI
-    const aiIndex = Math.floor(Math.random() * playerIds.length);
-    const aiId = playerIds[aiIndex];
-    await gameRef.child(`players/${aiId}/isAI`).set(true);
+    // Prevent double-start / multiple AI creation
+    if (game.status !== 'lobby') {
+      return res.status(400).json({ error: 'Game already started' });
+    }
+    if (game.aiPlayer) {
+      return res.status(400).json({ error: 'AI already created for this game' });
+    }
 
-    // Start round 1
+    // Require at least 3 HUMAN players before adding the AI
+    const players = game.players || {};
+    const humanIds = Object.keys(players).filter((pid) => !players[pid].isAI);
+    if (humanIds.length < 3) {
+      return res.status(400).json({ error: 'Need at least 3 human players to start' });
+    }
+
+    // Create a NEW dedicated AI player (not hijacking a human)
+    const aiId = `ai-${Date.now()}`;
+    const now = Date.now();
+
+    // Atomic-ish update: create AI + start round in one update call
     await gameRef.update({
+      [`players/${aiId}`]: {
+        name: '???',
+        score: 0,
+        isAI: true,
+        joinedAt: now
+      },
       status: 'playing',
       currentRound: 1,
       aiPlayer: aiId,
-      rounds: { 1: { prompt: GAME_PROMPTS[0], startTime: Date.now(), submissions: {}, votes: {} } }
+      rounds: {
+        1: {
+          prompt: GAME_PROMPTS[0],
+          startTime: now,
+          phase: 'submitting',
+          submissions: {},
+          votes: {}
+        }
+      }
     });
 
     console.log(`Game ${gameCode} started. AI player: ${aiId}`);
 
+    // Trigger AI submission shortly after start
     setTimeout(() => generateAIResponse(gameCode, 1, GAME_PROMPTS[0]), 2000);
-    res.json({ success: true, aiId });
 
+    res.json({ success: true, aiId });
   } catch (error) {
     console.error('Error starting game:', error);
     res.status(500).json({ error: 'Failed to start game' });
   }
 });
 
+
 // Submit player answer
 app.post('/api/game/submit', async (req: Request, res: Response) => {
   try {
     const { gameCode, round, playerId, answer } = req.body;
-    if (!gameCode || !round || !playerId || !answer) return res.status(400).json({ error: 'Missing required fields' });
+    if (!gameCode || !round || !playerId || !answer) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
 
-    await db.ref(`games/${gameCode}/rounds/${round}/submissions/${playerId}`).set(answer);
+    const roundRef = db.ref(`games/${gameCode}/rounds/${round}`);
+    await roundRef.child(`submissions/${playerId}`).set(answer);
     console.log(`Player ${playerId} submitted answer for round ${round}`);
-    res.json({ success: true });
 
+    // --- Check if all expected submissions are in (humans + AI) ---
+    const gameSnapshot = await db.ref(`games/${gameCode}`).once('value');
+    const game = gameSnapshot.val();
+    const players = game.players || {};
+    const aiPlayerId = game.aiPlayer;
+
+    const submissions = game.rounds?.[round]?.submissions || {};
+    const humanIds = Object.keys(players).filter((pid) => !players[pid].isAI);
+
+    // Expect: all humans + the AI submission
+    const expectedIds = aiPlayerId ? [...humanIds, aiPlayerId] : [...humanIds];
+
+    const allSubmitted = expectedIds.every((pid) => submissions[pid]);
+
+    // Flip phase to voting once, when complete
+    const phase = game.rounds?.[round]?.phase || 'submitting';
+    if (phase === 'submitting' && allSubmitted) {
+      await roundRef.update({
+        phase: 'voting',
+        voteStartTime: Date.now()
+      });
+      console.log(`Round ${round}: all submissions received. Voting is now OPEN.`);
+    }
+
+    // Return useful info to client
+    const newPhase = allSubmitted ? 'voting' : phase;
+    res.json({
+      success: true,
+      phase: newPhase,
+      submissionsReceived: Object.keys(submissions).length,
+      submissionsRequired: expectedIds.length
+    });
   } catch (error) {
     console.error('Error submitting answer:', error);
     res.status(500).json({ error: 'Failed to submit answer' });
   }
 });
+
 
 // Submit vote
 app.post('/api/game/vote', async (req: Request, res: Response) => {
@@ -176,10 +239,15 @@ app.post('/api/game/vote', async (req: Request, res: Response) => {
     const players = game.players;
     const votes = game.rounds[round].votes || {};
 
-    if (Object.keys(votes).length === Object.keys(players).length) {
-      console.log(`All votes received for round ${round}. Calculating scores...`);
+    // Only require HUMAN votes (AI does not need to vote)
+    const humanIds = Object.keys(players).filter((pid) => !players[pid].isAI);
+    const votesCount = Object.keys(votes).length;
+
+    if (votesCount >= humanIds.length) {
+      console.log(`All human votes received for round ${round}. Calculating scores...`);
       await calculateRoundScores(gameCode, round);
     }
+
 
     res.json({ success: true });
 
@@ -267,6 +335,8 @@ async function calculateRoundScores(gameCode: string, round: number) {
     for (const playerId of Object.keys(players)) roundScores[playerId] = 0;
 
     for (const [voterId, targetId] of Object.entries(votes) as [string, string][]) {
+      if (voterId === aiPlayerId) continue;
+
       if (targetId === aiPlayerId) roundScores[voterId] += 100;
       else aiPoints += 50;
 
@@ -290,7 +360,18 @@ async function calculateRoundScores(gameCode: string, round: number) {
 
     await gameRef.update(updates);
 
-    console.log(`Round ${round} scores calculated. AI earned ${aiPoints} points.`);
+    const scoreSummary = Object.entries(roundScores)
+      .map(([playerId, points]) => {
+        const name = players[playerId]?.name || playerId;
+        const totalScore = (players[playerId]?.score || 0) + points;
+        return `${name}: +${points} (total ${totalScore})`;
+      })
+      .join(' | ');
+
+    console.log(
+      `Round ${round} scores calculated. AI earned ${aiPoints} points.\nScores → ${scoreSummary}`
+    );
+
 
     if (round < 3) {
       const nextRound = round + 1;
