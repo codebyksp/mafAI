@@ -559,9 +559,6 @@ const winners = game.winners || [];
             The AI was: <strong>${game.players[game.aiPlayer]?.name || '???'}</strong>
         </p>
         
-        <button onclick="window.location.href='home.html'" class="primary-btn" style="margin-top: 2rem;">
-            Play Again
-        </button>
     `;
     
     document.body.appendChild(finalContainer);
