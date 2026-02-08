@@ -4,10 +4,10 @@ import { getDatabase, ref, onValue, off } from "https://www.gstatic.com/firebase
 // Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyBYz0Qq02wMXEscq4dZ4fJdD0Ii8RElEUw",
-  authDomain: "mafai-4f344.firebaseapp.com",
-  databaseURL: "https://mafai-4f344-default-rtdb.firebaseio.com",
-  projectId: "mafai-4f344",
-  storageBucket: "mafai-4f344.firebasestorage.app",
+  authDomain: "hackathon-3c4b6.firebaseapp.com",
+  databaseURL: "https://hackathon-3c4b6-default-rtdb.firebaseio.com",
+  projectId: "hackathon-3c4b6",
+  storageBucket: "hackathon-3c4b6.firebasestorage.app",
   messagingSenderId: "844064924386",
   appId: "1:844064924386:web:e924caed7a63efbe3df4bb",
   measurementId: "G-WXQML1M3VR"

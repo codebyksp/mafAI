@@ -4,18 +4,22 @@ import { getDatabase, ref, onValue, off } from "https://www.gstatic.com/firebase
 // Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyBYz0Qq02wMXEscq4dZ4fJdD0Ii8RElEUw",
-  authDomain: "mafai-4f344.firebaseapp.com",
-  databaseURL: "https://mafai-4f344-default-rtdb.firebaseio.com",
-  projectId: "mafai-4f344",
-  storageBucket: "mafai-4f344.firebasestorage.app",
+  authDomain: "hackathon-3c4b6.firebaseapp.com",
+  databaseURL: "https://hackathon-3c4b6-default-rtdb.firebaseio.com",
+  projectId: "hackathon-3c4b6",
+  storageBucket: "hackathon-3c4b6.firebasestorage.app",
   messagingSenderId: "844064924386",
   appId: "1:844064924386:web:e924caed7a63efbe3df4bb",
   measurementId: "G-WXQML1M3VR"
 };
 
+
+
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+
 
 // Get URL parameters
 const urlParams = new URLSearchParams(window.location.search);
@@ -45,9 +49,9 @@ const gameRef = ref(db, `games/${gameCode}`);
 let gameListener;
 let previousRound = 0;
 
+
 gameListener = onValue(gameRef, (snapshot) => {
     const game = snapshot.val();
-    
     if (!game) {
         console.error('Game not found in Firebase:', gameCode);
         alert('Game not found. Please try creating a new game.');
@@ -81,6 +85,8 @@ gameListener = onValue(gameRef, (snapshot) => {
 
 // Handle playing phase
 function handlePlayingPhase(game) {
+
+    
     const round = game.rounds?.[currentRound];
     if (!round) return;
     
@@ -125,6 +131,7 @@ function handlePlayingPhase(game) {
 // Clean up UI when round changes
 function cleanupRoundUI() {
     // Clear text box
+
     const inputField = document.getElementById('input');
     if (inputField) {
         inputField.value = '';
@@ -160,10 +167,18 @@ function cleanupRoundUI() {
     if (playerAnswer) {
         playerAnswer.style.display = 'flex';
     }
+
+
+    window.location.reload();
+
+
 }
 
 // Show submit phase
 function showSubmit(game, round, submissions) {
+    
+    document.querySelector('.waiting')?.remove();
+
     const wrapper = document.getElementById('wrapper');
     const playerAnswer = document.getElementById('playerAnswer');
     
@@ -177,7 +192,10 @@ function showSubmit(game, round, submissions) {
     } else if (isAI) {
         showWaitingState('You are the AI! Waiting for others...');
         playerAnswer.style.display = 'none';
+
     }
+
+
 }
 
 // Submit answer handler
@@ -220,16 +238,25 @@ document.getElementById('playerAnswer').addEventListener('submit', async functio
         showWaitingState('Answer submitted! Waiting for others...');
         this.style.display = 'none';
         
+
+
+
     } catch (err) {
         console.error('Error submitting:', err);
         alert('Failed to submit: ' + err.message);
         submitBtn.disabled = false;
         submitBtn.value = 'Submit Answer';
     }
+
+
 });
 
 // Show voting phase
 function showVoting(game, round, submissions, votes) {
+
+        document.querySelector('.waiting')?.remove();
+
+
     const wrapper = document.getElementById('wrapper');
     const playerAnswer = document.getElementById('playerAnswer');
     
@@ -251,6 +278,9 @@ function showVoting(game, round, submissions, votes) {
 
 // Display answers for voting
 function displayAnswersForVoting(game, submissions, selectedVote) {
+
+
+
     console.log('Displaying answers for voting:', { game, submissions, selectedVote });
     
     // Remove existing voting container
@@ -322,10 +352,16 @@ function displayAnswersForVoting(game, submissions, selectedVote) {
     });
     
     document.body.appendChild(votingContainer);
+
+
+
+
 }
 
 // Vote for an answer
 async function voteForAnswer(targetId, cardElement) {
+
+    
     console.log('Attempting to vote for:', targetId, 'from player:', playerId);
     
     if (targetId === playerId) {
@@ -376,15 +412,23 @@ async function voteForAnswer(targetId, cardElement) {
             votingContainer.remove();
         }
         
+
+
     } catch (err) {
         console.error('Error voting:', err);
         alert('Failed to vote: ' + err.message);
         cardElement.classList.remove('selected');
     }
+
+
 }
 
 // Show results
 function showResults(game, round, results) {
+
+        document.querySelector('.waiting')?.remove();
+
+
     const wrapper = document.getElementById('wrapper');
     wrapper.textContent = `Round ${currentRound} Results`;
     
@@ -436,6 +480,8 @@ function showResults(game, round, results) {
             inputField.value = '';
         }
     });
+
+
 }
 
 // Display scores
@@ -523,8 +569,14 @@ function displayFinalScores(players) {
     `).join('');
 }
 
+
+var count = 0;
+
 // Show waiting state
 function showWaitingState(message) {
+
+
+
     let waitingDiv = document.querySelector('.waiting');
     if (!waitingDiv) {
         waitingDiv = document.createElement('div');
@@ -536,6 +588,8 @@ function showWaitingState(message) {
         <div class="spinner"></div>
         <p>${message}</p>
     `;
+
+           
 }
 
 // Utility functions
@@ -552,3 +606,7 @@ window.addEventListener('beforeunload', () => {
         off(gameRef);
     }
 });
+
+
+
+
