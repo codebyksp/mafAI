@@ -20,10 +20,9 @@ document.getElementById('hostForm').addEventListener('submit', async function (e
         const data = await response.json();
 
         if (response.ok) {
-            // Wait for Firebase to finish writing
-            setTimeout(() => {
-                window.location.href = `hostWaitingRoom.html?gameCode=${encodeURIComponent(data.gameCode)}&hostID=${encodeURIComponent(hostID)}`;
-            }, 800);
+            console.log('Game created successfully:', data);
+            // Immediately redirect after successful creation
+            window.location.href = `hostWaitingRoom.html?gameCode=${encodeURIComponent(data.gameCode)}&hostID=${encodeURIComponent(hostID)}`;
         } else {
             alert(data.error || "Failed to create game");
             submitBtn.disabled = false;

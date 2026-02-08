@@ -4,10 +4,10 @@ import { getDatabase, ref, onValue, off } from "https://www.gstatic.com/firebase
 // Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyBYz0Qq02wMXEscq4dZ4fJdD0Ii8RElEUw",
-  authDomain: "hackathon-3c4b6.firebaseapp.com",
-  databaseURL: "https://hackathon-3c4b6-default-rtdb.firebaseio.com",
-  projectId: "hackathon-3c4b6",
-  storageBucket: "hackathon-3c4b6.firebasestorage.app",
+  authDomain: "mafai-4f344.firebaseapp.com",
+  databaseURL: "https://mafai-4f344-default-rtdb.firebaseio.com",
+  projectId: "mafai-4f344",
+  storageBucket: "mafai-4f344.firebasestorage.app",
   messagingSenderId: "844064924386",
   appId: "1:844064924386:web:e924caed7a63efbe3df4bb",
   measurementId: "G-WXQML1M3VR"
@@ -43,19 +43,30 @@ document.body.prepend(roundIndicator);
 // Listen to game state
 const gameRef = ref(db, `games/${gameCode}`);
 let gameListener;
+let previousRound = 0;
 
 gameListener = onValue(gameRef, (snapshot) => {
     const game = snapshot.val();
     
     if (!game) {
-        alert('Game not found');
+        console.error('Game not found in Firebase:', gameCode);
+        alert('Game not found. Please try creating a new game.');
         window.location.href = 'home.html';
         return;
     }
     
+    console.log('Game data received in game.js:', game);
     currentGame = game;
-    currentRound = game.currentRound || 1;
+    const newRound = game.currentRound || 1;
     isAI = game.aiPlayer === playerId;
+    
+    // Check if round changed and clean up UI
+    if (newRound !== previousRound && previousRound !== 0) {
+        console.log(`Round changed from ${previousRound} to ${newRound}, cleaning up UI`);
+        cleanupRoundUI();
+    }
+    previousRound = newRound;
+    currentRound = newRound;
     
     // Update round display
     document.getElementById('roundNumber').textContent = currentRound;
@@ -76,17 +87,78 @@ function handlePlayingPhase(game) {
     const submissions = round.submissions || {};
     const votes = round.votes || {};
     const results = round.results;
+    const phase = round.phase || 'submitting';
     
     // Show title
     document.getElementById('title').textContent = 'AI vs Humans';
     
-    // Determine phase
-    if (results) {
+    // Determine phase - CRITICAL: Only show results when they're actually available
+    if (results && results.calculatedAt) {
+        // Results are fully calculated and available
         showResults(game, round, results);
-    } else if (Object.keys(votes).length > 0 || round.phase === 'voting') {
+    } else if (phase === 'voting' || (Object.keys(votes).length > 0 && !hasVoted)) {
+        // Voting phase - show voting interface
         showVoting(game, round, submissions, votes);
+    } else if (Object.keys(submissions).length > 0) {
+        // Check if all submissions are in and we're waiting for votes
+        const players = game.players || {};
+        const aiPlayerId = game.aiPlayer;
+        const humanIds = Object.keys(players).filter((pid) => !players[pid].isAI);
+        const expectedIds = aiPlayerId ? [...humanIds, aiPlayerId] : [...humanIds];
+        const allSubmitted = expectedIds.every((pid) => submissions[pid]);
+        
+        if (allSubmitted && phase !== 'voting') {
+            // All submissions in but not yet voting - waiting for server to update phase
+            showWaitingState('All answers submitted! Waiting for voting to begin...');
+        } else if (allSubmitted && phase === 'voting') {
+            // All submissions in and voting phase started
+            showVoting(game, round, submissions, votes);
+        } else {
+            // Still waiting for submissions
+            showSubmit(game, round, submissions);
+        }
     } else {
         showSubmit(game, round, submissions);
+    }
+}
+
+// Clean up UI when round changes
+function cleanupRoundUI() {
+    // Clear text box
+    const inputField = document.getElementById('input');
+    if (inputField) {
+        inputField.value = '';
+    }
+    
+    // Reset submit button state
+    const submitBtn = document.querySelector('#playerAnswer input[type="submit"]');
+    if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.value = 'Submit Answer';
+    }
+    
+    // Clear any existing voting container
+    const votingContainer = document.querySelector('.voting-container');
+    if (votingContainer) {
+        votingContainer.remove();
+    }
+    
+    // Clear any existing results container
+    const resultsContainer = document.querySelector('.results-container');
+    if (resultsContainer) {
+        resultsContainer.remove();
+    }
+    
+    // Clear waiting state
+    const waitingDiv = document.querySelector('.waiting');
+    if (waitingDiv) {
+        waitingDiv.remove();
+    }
+    
+    // Reset player answer form display
+    const playerAnswer = document.getElementById('playerAnswer');
+    if (playerAnswer) {
+        playerAnswer.style.display = 'flex';
     }
 }
 
@@ -179,6 +251,8 @@ function showVoting(game, round, submissions, votes) {
 
 // Display answers for voting
 function displayAnswersForVoting(game, submissions, selectedVote) {
+    console.log('Displaying answers for voting:', { game, submissions, selectedVote });
+    
     // Remove existing voting container
     let votingContainer = document.querySelector('.voting-container');
     if (votingContainer) {
@@ -197,14 +271,24 @@ function displayAnswersForVoting(game, submissions, selectedVote) {
     
     shuffleArray(answers);
     
+    console.log('Shuffled answers:', answers);
+    
     // Display each answer
     answers.forEach(item => {
         const card = document.createElement('div');
         card.className = 'answer-card';
+        card.dataset.playerId = item.playerId; // Store player ID as data attribute
         
         if (item.playerId === playerId) {
             card.style.opacity = '0.5';
             card.style.cursor = 'not-allowed';
+            card.style.pointerEvents = 'none'; // Prevent clicking own answer
+            console.log('Disabled own answer card for:', item.playerName);
+        } else {
+            // Enable clicking for other players' answers
+            card.style.cursor = 'pointer';
+            card.style.pointerEvents = 'auto'; // Ensure pointer events are enabled
+            console.log('Enabled voting card for:', item.playerName);
         }
         
         if (selectedVote === item.playerId) {
@@ -216,9 +300,25 @@ function displayAnswersForVoting(game, submissions, selectedVote) {
             <div class="answer-text">${item.answer}</div>
         `;
         
-        card.addEventListener('click', () => voteForAnswer(item.playerId, card));
-        
         votingContainer.appendChild(card);
+    });
+    
+    // Add event delegation for voting container
+    votingContainer.addEventListener('click', (e) => {
+        const card = e.target.closest('.answer-card');
+        if (!card) return;
+        
+        const targetId = card.dataset.playerId;
+        if (!targetId) return;
+        
+        // Don't allow clicking own answer
+        if (targetId === playerId) {
+            alert('Cannot vote for yourself!');
+            return;
+        }
+        
+        console.log('Vote clicked for:', card.querySelector('.answer-player').textContent, 'ID:', targetId);
+        voteForAnswer(targetId, card);
     });
     
     document.body.appendChild(votingContainer);
@@ -226,12 +326,17 @@ function displayAnswersForVoting(game, submissions, selectedVote) {
 
 // Vote for an answer
 async function voteForAnswer(targetId, cardElement) {
+    console.log('Attempting to vote for:', targetId, 'from player:', playerId);
+    
     if (targetId === playerId) {
         alert('Cannot vote for yourself!');
         return;
     }
     
-    if (hasVoted) return;
+    if (hasVoted) {
+        console.log('Already voted, ignoring');
+        return;
+    }
     
     // Visual feedback
     document.querySelectorAll('.answer-card').forEach(el => {
@@ -240,6 +345,7 @@ async function voteForAnswer(targetId, cardElement) {
     cardElement.classList.add('selected');
     
     try {
+        console.log('Sending vote request to server...');
         const response = await fetch('/api/game/vote', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -251,16 +357,24 @@ async function voteForAnswer(targetId, cardElement) {
             })
         });
         
+        console.log('Vote response status:', response.status);
+        
         const data = await response.json();
+        console.log('Vote response data:', data);
         
         if (!response.ok) {
             throw new Error(data.error || 'Failed to vote');
         }
         
         hasVoted = true;
-        console.log('Vote submitted');
+        console.log('Vote submitted successfully');
         showWaitingState('Vote submitted! Waiting for results...');
-        document.querySelector('.voting-container').remove();
+        
+        // Safely remove voting container
+        const votingContainer = document.querySelector('.voting-container');
+        if (votingContainer) {
+            votingContainer.remove();
+        }
         
     } catch (err) {
         console.error('Error voting:', err);
@@ -277,13 +391,16 @@ function showResults(game, round, results) {
     document.getElementById('playerAnswer').style.display = 'none';
     document.querySelector('.voting-container')?.remove();
     
-    // Create or update results container
-    let resultsContainer = document.querySelector('.results-container');
-    if (!resultsContainer) {
-        resultsContainer = document.createElement('div');
-        resultsContainer.className = 'results-container';
-        document.body.appendChild(resultsContainer);
+    // Clear any existing results container
+    const existingResults = document.querySelector('.results-container');
+    if (existingResults) {
+        existingResults.remove();
     }
+    
+    // Create results container
+    const resultsContainer = document.createElement('div');
+    resultsContainer.className = 'results-container';
+    document.body.appendChild(resultsContainer);
     
     const aiPlayer = game.players[results.aiPlayerId];
     
@@ -307,9 +424,17 @@ function showResults(game, round, results) {
     
     // Next round button
     document.getElementById('nextRoundBtn').addEventListener('click', () => {
+        // Clear the results container when moving to next round
+        resultsContainer.remove();
         hasSubmitted = false;
         hasVoted = false;
         document.getElementById('nextRoundBtn').disabled = true;
+        
+        // Clear the text box for the next round
+        const inputField = document.getElementById('input');
+        if (inputField) {
+            inputField.value = '';
+        }
     });
 }
 

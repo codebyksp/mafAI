@@ -49,6 +49,19 @@ function generateCode(): string {
   return code;
 }
 
+// Utility function to generate random player names
+function generateRandomName(): string {
+  const adjectives = ['Cool', 'Happy', 'Smart', 'Fast', 'Brave', 'Clever', 'Silly', 'Funny', 'Nice', 'Kind', 'Bold', 'Wild', 'Calm', 'Bright', 'Sharp', 'Quick', 'Lucky', 'Sunny', 'Rainy', 'Cloudy', 'Stormy', 'Peaceful', 'Quiet', 'Loud', 'Wild', 'Tame', 'Crazy', 'Calm', 'Cool', 'Hot', 'Warm', 'Cold', 'Frosty', 'Icy', 'Fiery', 'Blazing', 'Burning', 'Smoking', 'Steaming', 'Boiling', 'Freezing', 'Chilly', 'Cool', 'Fresh', 'Clean', 'Dirty', 'Messy', 'Tidy', 'Neat', 'Organized', 'Chaotic', 'Calm', 'Angry', 'Happy', 'Sad', 'Excited', 'Bored', 'Tired', 'Energetic', 'Sleepy', 'Awake', 'Dreamy', 'Real', 'Fake', 'True', 'False', 'Right', 'Wrong', 'Good', 'Bad', 'Great', 'Terrible', 'Awesome', 'Awful', 'Amazing', 'Horrible', 'Fantastic', 'Awful', 'Wonderful', 'Terrible', 'Beautiful', 'Ugly', 'Pretty', 'Hideous', 'Lovely', 'Hateful', 'Adorable', 'Disgusting', 'Cute', 'Nasty', 'Sweet', 'Sour', 'Bitter', 'Salty', 'Spicy', 'Plain', 'Fancy', 'Simple', 'Complex', 'Easy', 'Hard', 'Difficult', 'Simple', 'Basic', 'Advanced', 'Expert', 'Master', 'Beginner', 'Intermediate', 'Professional', 'Amateur', 'Novice', 'Veteran', 'Expert', 'Guru', 'Master', 'Student', 'Teacher', 'Professor', 'Doctor', 'Nurse', 'Engineer', 'Developer', 'Designer', 'Artist', 'Musician', 'Writer', 'Author', 'Poet', 'Painter', 'Sculptor', 'Photographer', 'Filmmaker', 'Director', 'Producer', 'Actor', 'Actress', 'Singer', 'Dancer', 'Athlete', 'Player', 'Gamer', 'Coder', 'Programmer', 'Hacker', 'Builder', 'Creator', 'Maker', 'Inventor', 'Scientist', 'Researcher', 'Explorer', 'Traveler', 'Wanderer', 'Nomad', 'Vagabond', 'Rover', 'Rambler', 'Hiker', 'Climber', 'Runner', 'Walker', 'Jogger', 'Sprinter', 'Swimmer', 'Diver', 'Surfer', 'Skier', 'Snowboarder', 'Skater', 'Biker', 'Driver', 'Pilot', 'Captain', 'Sailor', 'Navigator', 'Guide', 'Leader', 'Follower', 'Manager', 'Worker', 'Employee', 'Boss', 'Owner', 'Founder', 'Creator', 'Builder', 'Maker', 'Doer', 'Thinker', 'Dreamer', 'Believer', 'Achiever', 'Winner', 'Loser', 'Champion', 'Hero', 'Villain', 'Saint', 'Sinner', 'Angel', 'Demon', 'Ghost', 'Spirit', 'Soul', 'Mind', 'Body', 'Heart', 'Brain', 'Muscle', 'Bone', 'Skin', 'Hair', 'Eye', 'Ear', 'Nose', 'Mouth', 'Hand', 'Foot', 'Arm', 'Leg', 'Head', 'Face', 'Neck', 'Back', 'Chest', 'Stomach', 'Waist', 'Hip', 'Thigh', 'Calf', 'Ankle', 'Wrist', 'Elbow', 'Knee', 'Shoulder', 'Hip', 'Waist', 'Chest', 'Back', 'Neck', 'Head', 'Face', 'Eye', 'Ear', 'Nose', 'Mouth', 'Hand', 'Foot', 'Arm', 'Leg', 'Finger', 'Toe', 'Nail', 'Tooth', 'Tongue', 'Lip', 'Cheek', 'Chin', 'Forehead', 'Temple', 'Jaw', 'Throat', 'Voice', 'Sound', 'Noise', 'Silence', 'Quiet', 'Loud', 'Noisy', 'Peaceful', 'Calm', 'Tranquil', 'Serene', 'Still', 'Motionless', 'Static', 'Dynamic', 'Active', 'Busy', 'Occupied', 'Free', 'Available', 'Busy', 'Occupied', 'Taken', 'Reserved', 'Booked', 'Scheduled', 'Planned', 'Organized', 'Structured', 'Ordered', 'Chaos', 'Disorder', 'Confusion', 'Mess', 'Clutter', 'Junk', 'Trash', 'Garbage', 'Rubbish', 'Waste', 'Litter', 'Debris', 'Dirt', 'Dust', 'Grime', 'Gunk', 'Goo', 'Slime', 'Mud', 'Dirt', 'Earth', 'Soil', 'Sand', 'Rock', 'Stone', 'Metal', 'Wood', 'Plastic', 'Glass', 'Paper', 'Cloth', 'Fabric', 'Leather', 'Fur', 'Feather', 'Hair', 'Nail', 'Tooth', 'Bone', 'Skin', 'Meat', 'Muscle', 'Fat', 'Blood', 'Vein', 'Artery', 'Heart', 'Lung', 'Liver', 'Kidney', 'Brain', 'Stomach', 'Intestine', 'Bowel', 'Bladder', 'Kidney', 'Liver', 'Pancreas', 'Spleen', 'Gallbladder', 'Appendix', 'Colon', 'Rectum', 'Anus', 'Mouth', 'Throat', 'Esophagus', 'Stomach', 'Intestine', 'Bowel', 'Bladder', 'Kidney', 'Liver', 'Pancreas', 'Spleen', 'Gallbladder', 'Appendix', 'Colon', 'Rectum', 'Anus', 'Mouth', 'Throat', 'Esophagus', 'Stomach', 'Intestine', 'Bowel', 'Bladder', 'Kidney', 'Liver', 'Pancreas', 'Spleen', 'Gallbladder', 'Appendix', 'Colon', 'Rectum', 'Anus'];
+  
+  const nouns = ['Water', 'Fire', 'Earth', 'Air', 'Wind', 'Rain', 'Snow', 'Ice', 'Fire', 'Lava', 'Rock', 'Stone', 'Metal', 'Wood', 'Plastic', 'Glass', 'Paper', 'Cloth', 'Fabric', 'Leather', 'Fur', 'Feather', 'Hair', 'Nail', 'Tooth', 'Bone', 'Skin', 'Meat', 'Muscle', 'Fat', 'Blood', 'Vein', 'Artery', 'Heart', 'Lung', 'Liver', 'Kidney', 'Brain', 'Stomach', 'Intestine', 'Bowel', 'Bladder', 'Kidney', 'Liver', 'Pancreas', 'Spleen', 'Gallbladder', 'Appendix', 'Colon', 'Rectum', 'Anus', 'Mouth', 'Throat', 'Esophagus', 'Stomach', 'Intestine', 'Bowel', 'Bladder', 'Kidney', 'Liver', 'Pancreas', 'Spleen', 'Gallbladder', 'Appendix', 'Colon', 'Rectum', 'Anus', 'Mouth', 'Throat', 'Esophagus', 'Stomach', 'Intestine', 'Bowel', 'Bladder', 'Kidney', 'Liver', 'Pancreas', 'Spleen', 'Gallbladder', 'Appendix', 'Colon', 'Rectum', 'Anus', 'Summer', 'Winter', 'Spring', 'Fall', 'Autumn', 'Season', 'Year', 'Month', 'Week', 'Day', 'Hour', 'Minute', 'Second', 'Time', 'Clock', 'Watch', 'Timer', 'Alarm', 'Bell', 'Whistle', 'Horn', 'Siren', 'Sound', 'Noise', 'Silence', 'Quiet', 'Loud', 'Noisy', 'Peaceful', 'Calm', 'Tranquil', 'Serene', 'Still', 'Motionless', 'Static', 'Dynamic', 'Active', 'Busy', 'Occupied', 'Free', 'Available', 'Busy', 'Occupied', 'Taken', 'Reserved', 'Booked', 'Scheduled', 'Planned', 'Organized', 'Structured', 'Ordered', 'Chaos', 'Disorder', 'Confusion', 'Mess', 'Clutter', 'Junk', 'Trash', 'Garbage', 'Rubbish', 'Waste', 'Litter', 'Debris', 'Dirt', 'Dust', 'Grime', 'Gunk', 'Goo', 'Slime', 'Mud', 'Dirt', 'Earth', 'Soil', 'Sand', 'Rock', 'Stone', 'Metal', 'Wood', 'Plastic', 'Glass', 'Paper', 'Cloth', 'Fabric', 'Leather', 'Fur', 'Feather', 'Hair', 'Nail', 'Tooth', 'Bone', 'Skin', 'Meat', 'Muscle', 'Fat', 'Blood', 'Vein', 'Artery', 'Heart', 'Lung', 'Liver', 'Kidney', 'Brain', 'Stomach', 'Intestine', 'Bowel', 'Bladder', 'Kidney', 'Liver', 'Pancreas', 'Spleen', 'Gallbladder', 'Appendix', 'Colon', 'Rectum', 'Anus', 'Mouth', 'Throat', 'Esophagus', 'Stomach', 'Intestine', 'Bowel', 'Bladder', 'Kidney', 'Liver', 'Pancreas', 'Spleen', 'Gallbladder', 'Appendix', 'Colon', 'Rectum', 'Anus', 'Mouth', 'Throat', 'Esophagus', 'Stomach', 'Intestine', 'Bowel', 'Bladder', 'Kidney', 'Liver', 'Pancreas', 'Spleen', 'Gallbladder', 'Appendix', 'Colon', 'Rectum', 'Anus', 'Sun', 'Moon', 'Star', 'Planet', 'Galaxy', 'Universe', 'Space', 'Sky', 'Cloud', 'Storm', 'Lightning', 'Thunder', 'Rain', 'Snow', 'Ice', 'Fire', 'Lava', 'Rock', 'Stone', 'Metal', 'Wood', 'Plastic', 'Glass', 'Paper', 'Cloth', 'Fabric', 'Leather', 'Fur', 'Feather', 'Hair', 'Nail', 'Tooth', 'Bone', 'Skin', 'Meat', 'Muscle', 'Fat', 'Blood', 'Vein', 'Artery', 'Heart', 'Lung', 'Liver', 'Kidney', 'Brain', 'Stomach', 'Intestine', 'Bowel', 'Bladder', 'Kidney', 'Liver', 'Pancreas', 'Spleen', 'Gallbladder', 'Appendix', 'Colon', 'Rectum', 'Anus', 'Mouth', 'Throat', 'Esophagus', 'Stomach', 'Intestine', 'Bowel', 'Bladder', 'Kidney', 'Liver', 'Pancreas', 'Spleen', 'Gallbladder', 'Appendix', 'Colon', 'Rectum', 'Anus', 'Mouth', 'Throat', 'Esophagus', 'Stomach', 'Intestine', 'Bowel', 'Bladder', 'Kidney', 'Liver', 'Pancreas', 'Spleen', 'Gallbladder', 'Appendix', 'Colon', 'Rectum', 'Anus', 'Dog', 'Cat', 'Bird', 'Fish', 'Snake', 'Lizard', 'Turtle', 'Frog', 'Toad', 'Salamander', 'Newt', 'Alligator', 'Crocodile', 'Dinosaur', 'Dragon', 'Unicorn', 'Pegasus', 'Griffin', 'Phoenix', 'Basilisk', 'Hydra', 'Minotaur', 'Centaur', 'Satyr', 'Nymph', 'Dryad', 'Naiad', 'Oread', 'Harpies', 'Sirens', 'Mermaid', 'Merman', 'Triton', 'Poseidon', 'Zeus', 'Hera', 'Athena', 'Apollo', 'Artemis', 'Ares', 'Hermes', 'Hephaestus', 'Aphrodite', 'Dionysus', 'Demeter', 'Hades', 'Persephone', 'Eros', 'Cupid', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Neptune', 'Uranus', 'Pluto', 'Earth', 'Moon', 'Sun', 'Star', 'Planet', 'Galaxy', 'Universe', 'Space', 'Sky', 'Cloud', 'Storm', 'Lightning', 'Thunder', 'Rain', 'Snow', 'Ice', 'Fire', 'Lava', 'Rock', 'Stone', 'Metal', 'Wood', 'Plastic', 'Glass', 'Paper', 'Cloth', 'Fabric', 'Leather', 'Fur', 'Feather', 'Hair', 'Nail', 'Tooth', 'Bone', 'Skin', 'Meat', 'Muscle', 'Fat', 'Blood', 'Vein', 'Artery', 'Heart', 'Lung', 'Liver', 'Kidney', 'Brain', 'Stomach', 'Intestine', 'Bowel', 'Bladder', 'Kidney', 'Liver', 'Pancreas', 'Spleen', 'Gallbladder', 'Appendix', 'Colon', 'Rectum', 'Anus', 'Mouth', 'Throat', 'Esophagus', 'Stomach', 'Intestine', 'Bowel', 'Bladder', 'Kidney', 'Liver', 'Pancreas', 'Spleen', 'Gallbladder', 'Appendix', 'Colon', 'Rectum', 'Anus', 'Mouth', 'Throat', 'Esophagus', 'Stomach', 'Intestine', 'Bowel', 'Bladder', 'Kidney', 'Liver', 'Pancreas', 'Spleen', 'Gallbladder', 'Appendix', 'Colon', 'Rectum', 'Anus'];
+  
+  const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+  const noun = nouns[Math.floor(Math.random() * nouns.length)];
+  const number = Math.floor(Math.random() * 900) + 100; // 3-digit number
+  
+  return `${adj}${noun}${number}`;
+}
+
 // Prompts for the game
 const GAME_PROMPTS = [
   "What's the most embarrassing thing that happened to you in school?",
@@ -78,7 +91,7 @@ app.post('/api/game/create', async (req: Request, res: Response) => {
             host: hostId,
             players: {
                 [hostId]: { 
-                    name: 'Player-1', 
+                    name: generateRandomName(), 
                     score: 0, 
                     isAI: false, 
                     joinedAt: Date.now() 
@@ -138,7 +151,7 @@ app.post('/api/game/join', async (req: Request, res: Response) => {
     }
 
     await gameRef.child(`players/${playerId}`).set({
-      name: `Player-${playerCount + 1}`,
+      name: generateRandomName(),
       score: 0,
       isAI: false,
       joinedAt: Date.now()
@@ -199,7 +212,7 @@ app.post('/api/game/start', async (req: Request, res: Response) => {
     // Create AI + start round in one update
     await gameRef.update({
       [`players/${aiId}`]: {
-        name: '???',
+        name: generateRandomName(),
         score: 0,
         isAI: true,
         joinedAt: now
@@ -315,6 +328,8 @@ app.post('/api/game/vote', async (req: Request, res: Response) => {
   try {
     const { gameCode, round, voterId, targetId } = req.body;
     
+    console.log('Vote request received:', { gameCode, round, voterId, targetId });
+    
     if (!gameCode || !round || !voterId || !targetId) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
@@ -329,22 +344,33 @@ app.post('/api/game/vote', async (req: Request, res: Response) => {
     const game = snapshot.val();
     const aiPlayerId = game.aiPlayer;
 
+    console.log('Game data for voting:', { 
+      aiPlayerId, 
+      currentRound: game.currentRound,
+      players: Object.keys(game.players),
+      humanPlayers: Object.keys(game.players).filter(id => !game.players[id].isAI)
+    });
+
     // PREVENT AI FROM VOTING
     if (voterId === aiPlayerId) {
+      console.log('AI attempted to vote, blocked');
       return res.status(400).json({ error: 'AI cannot vote' });
     }
 
     // Verify both players exist
     if (!game.players[voterId] || !game.players[targetId]) {
+      console.log('Invalid player ID:', { voterId, targetId, existingPlayers: Object.keys(game.players) });
       return res.status(400).json({ error: 'Invalid player ID' });
     }
 
     // Prevent self-voting
     if (voterId === targetId) {
+      console.log('Self-vote attempted, blocked');
       return res.status(400).json({ error: 'Cannot vote for yourself' });
     }
 
     if (game.currentRound !== round) {
+      console.log('Invalid round:', { currentRound: game.currentRound, requestedRound: round });
       return res.status(400).json({ error: 'Invalid round' });
     }
 

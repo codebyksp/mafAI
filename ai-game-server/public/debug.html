@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Firebase Connection</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        input { padding: 8px; margin: 5px 0; width: 100%; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Debug Firebase Connection</h1>
+        
+        <div id="status" class="status info">Loading Firebase...</div>
+        
+        <div>
+            <input type="text" id="gameCode" placeholder="Enter game code to test" />
+            <button onclick="testGameRead()">Test Read Game</button>
+            <button onclick="testGameWrite()">Test Write Game</button>
+            <button onclick="clearStatus()">Clear Status</button>
+        </div>
+        
+        <div id="results" style="margin-top: 20px; white-space: pre-wrap;"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue, off, set, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        // Firebase config
+        const firebaseConfig = {
+          apiKey: "AIzaSyBYz0Qq02wMXEscq4dZ4fJdD0Ii8RElEUw",
+          authDomain: "mafai-4f344.firebaseapp.com",
+          databaseURL: "https://mafai-4f344-default-rtdb.firebaseio.com",
+          projectId: "mafai-4f344",
+          storageBucket: "mafai-4f344.firebasestorage.app",
+          messagingSenderId: "844064924386",
+          appId: "1:844064924386:web:e924caed7a63efbe3df4bb",
+          measurementId: "G-WXQML1M3VR"
+        };
+
+        try {
+            const app = initializeApp(firebaseConfig);
+            const db = getDatabase(app);
+            document.getElementById('status').innerHTML = '<strong>✓ Firebase initialized successfully</strong>';
+            document.getElementById('status').className = 'status success';
+            
+            window.testGameRead = async function() {
+                const gameCode = document.getElementById('gameCode').value.trim();
+                if (!gameCode) {
+                    addResult('Please enter a game code');
+                    return;
+                }
+                
+                addResult(`Testing read for game: ${gameCode}`);
+                
+                try {
+                    const gameRef = ref(db, `games/${gameCode}`);
+                    const snapshot = await get(gameRef);
+                    
+                    if (snapshot.exists()) {
+                        addResult(`✓ Game found: ${JSON.stringify(snapshot.val(), null, 2)}`);
+                    } else {
+                        addResult(`✗ Game not found in Firebase`);
+                    }
+                } catch (error) {
+                    addResult(`✗ Error reading game: ${error.message}`);
+                }
+            };
+            
+            window.testGameWrite = async function() {
+                const testCode = 'TEST' + Math.random().toString(36).substr(2, 4);
+                addResult(`Testing write for game: ${testCode}`);
+                
+                try {
+                    const gameRef = ref(db, `games/${testCode}`);
+                    await set(gameRef, {
+                        status: 'test',
+                        host: 'test-host',
+                        players: {},
+                        createdAt: Date.now()
+                    });
+                    
+                    addResult(`✓ Game created successfully`);
+                    
+                    // Clean up
+                    setTimeout(async () => {
+                        await set(gameRef, null);
+                        addResult(`✓ Test game cleaned up`);
+                    }, 1000);
+                    
+                } catch (error) {
+                    addResult(`✗ Error writing game: ${error.message}`);
+                }
+            };
+            
+            window.clearStatus = function() {
+                document.getElementById('results').innerHTML = '';
+            };
+            
+            function addResult(message) {
+                const results = document.getElementById('results');
+                results.innerHTML += new Date().toLocaleTimeString() + ': ' + message + '\n';
+                results.scrollTop = results.scrollHeight;
+            }
+            
+        } catch (error) {
+            document.getElementById('status').innerHTML = `<strong>✗ Firebase initialization failed: ${error.message}</strong>`;
+            document.getElementById('status').className = 'status error';
+        }
+    </script>
+</body>
+</html>

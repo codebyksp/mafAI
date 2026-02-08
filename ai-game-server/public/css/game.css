@@ -144,6 +144,8 @@ input[type="submit"]:disabled {
     display: grid;
     gap: 1rem;
     margin-top: 2rem;
+    position: relative;
+    z-index: 10;
 }
 
 .answer-card {
@@ -153,6 +155,10 @@ input[type="submit"]:disabled {
     padding: 1.5rem;
     cursor: pointer;
     transition: all 0.3s ease;
+    position: relative;
+    z-index: 20;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .answer-card:hover {
