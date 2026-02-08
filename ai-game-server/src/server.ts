@@ -153,11 +153,18 @@ app.post('/api/game/join', async (req: Request, res: Response) => {
 
 // Start the game
 app.post('/api/game/start', async (req: Request, res: Response) => {
-  try {
+
+
+    try {
+
+        
+
     const { gameCode } = req.body;
     if (!gameCode) {
       return res.status(400).json({ error: 'gameCode is required' });
     }
+
+        console.log(`Attempting to start game ${gameCode}...`);
 
     const gameRef = db.ref(`games/${gameCode}`);
     const snapshot = await gameRef.once('value');

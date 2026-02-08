@@ -16,7 +16,7 @@ document.getElementById('hostForm').addEventListener('submit', async function (e
 
         console.log("Creating game with hostID:", hostID);
 
-            const response = await fetch('http://localhost:3000/api/game/create', {
+            const response = await fetch('/api/game/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ hostId: hostID })

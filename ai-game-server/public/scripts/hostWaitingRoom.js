@@ -23,13 +23,16 @@ document.getElementById("startButton").addEventListener("click", async function 
     const urlParams = new URLSearchParams(window.location.search);
     const gameCode = urlParams.get('gameCode');
 
+    console.log("Game Code:", gameCode);
+
     try {
 
-        const response = await fetch('http://localhost:3000/api/game/start', {
+        const response = await fetch('/api/game/start', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({hostId : hostID})
+            body: JSON.stringify({gameCode:gameCode})
         });
+
 
 
         if (response.ok) {
@@ -41,7 +44,7 @@ document.getElementById("startButton").addEventListener("click", async function 
         }
     }
     catch (err) {
-        alert("Network error");
+        alert("networ error");
     }
 
 
