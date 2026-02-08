@@ -26,6 +26,9 @@ const db = getDatabase(app);
 
 // Listen to prompt
 
+const urlParams = new URLSearchParams(window.location.search);
+const gameCode = urlParams.get('gameCode');
+const playerId = urlParams.get('playerId');
 
 
 function listenToPrompt(gameCode) {
@@ -49,12 +52,7 @@ function listenToVoteTime(gameCode) {
 
             //send to voting page with round number game code and player id
 
-            window.location.href = `vote.html?gameCode=${encodeURIComponent(data.gameCode)}&hostID=${encodeURIComponent(hostID)}&roundNumber=${roundNumber}`;
-
-
-            
-
-
+            window.location.href = `vote.html?gameCode=${encodeURIComponent(gameCode)}&playerId=${encodeURIComponent(playerId)}&roundNumber=${roundNumber}`;
 
             const wrapper = document.getElementById('wrapper');
             if (wrapper) wrapper.innerText = prompt;
