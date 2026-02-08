@@ -104,7 +104,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         playerListContainer.innerHTML = '';
         
+
+        let count = 1;
+
+
         Object.entries(players).forEach(([id, player]) => {
+
+
             const playerDiv = document.createElement('div');
             playerDiv.className = 'player-item';
             
@@ -113,10 +119,11 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             
             playerDiv.innerHTML = `
-                <span class="player-name">${player.name || 'Player'}</span>
+                <span class="player-name">${"player "+count || 'Player'}</span>
                 ${id === hostId ? '<span class="player-badge">HOST</span>' : ''}
             `;
             
+            count++
             playerListContainer.appendChild(playerDiv);
         });
     }
