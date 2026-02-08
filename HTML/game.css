@@ -4,14 +4,36 @@
     box-sizing: border-box;
 }
 
+
+body {
+    color: white;
+    background-color: #5C374C;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    overflow: hidden;
+}
+
+textarea {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40%;
+    height:30%;
+}
+
+
 #title {
-    align-self: center;
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     font-size: 3em;
 }
 
 
 #wrapper {
-    position: fixed;
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);

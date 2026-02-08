@@ -10,18 +10,16 @@ document.getElementById('hostForm').addEventListener('submit', async function (e
 
     //get hostID
 
-    const hostID = document.getElementById('hostID').value
+    const hostID = "hello"; // generate a simple unique ID
 
-    if (!hostID) {
-        alert("Please enter a host name!");
-    }
-    else {
-        try {
+    try {
+
+        console.log("Creating game with hostID:", hostID);
 
             const response = await fetch('http://localhost:3000/api/game/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ hostID })
+                body: JSON.stringify({ hostId: hostID })
             });
 
             const data = await response.json();
@@ -40,5 +38,5 @@ document.getElementById('hostForm').addEventListener('submit', async function (e
             alert("Network error");
         }
 
-    }
+    
 });

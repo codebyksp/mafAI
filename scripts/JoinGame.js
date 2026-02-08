@@ -45,3 +45,5 @@ document.getElementById("host").addEventListener("click", function () {
     window.location.href = "host.html";
 
 });
+
+

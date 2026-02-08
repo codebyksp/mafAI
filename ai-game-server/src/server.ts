@@ -52,9 +52,13 @@ app.get('/api/health', (req: Request, res: Response) => {
 
 // Create a new game
 app.post('/api/game/create', async (req: Request, res: Response) => {
-  try {
-    const { hostId } = req.body;
-    if (!hostId) {
+    try {
+
+
+        const { hostId } = req.body;
+
+        if (!hostId) {
+
       return res.status(400).json({ error: 'hostId is required' });
     }
 
