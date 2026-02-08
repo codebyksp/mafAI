@@ -23,6 +23,19 @@ admin.initializeApp({
 
 const db = admin.database();
 
+//going to main page
+
+import path from 'path';
+
+// Serve frontend files
+app.use(express.static(path.join(__dirname, '../public')));
+
+
+app.get('/', (req: Request, res: Response) => {
+    res.sendFile(path.join(__dirname, '../public/home.html'));
+});
+
+
 // Initialize Gemini
 const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
