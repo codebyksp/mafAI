@@ -1,30 +1,33 @@
 <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/css/game.css">
-    </head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playing - MafAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/game.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1 id="title">AI vs Humans</h1>
+        
+        <!-- Prompt display -->
+        <div id="wrapper">Loading...</div>
 
-    <body>
-
-        <h1 id="title">Text Display Area</h1>
-        <!-- You can add your game code here -->
-
-        <div id="wrapper">get text</div>
-
+        <!-- Answer form -->
         <form id="playerAnswer">
-            <textarea id="input" placeholder="Type your command here..." rows="6" cols="50"></textarea>
-            <input type="submit" value="Submit">
+            <textarea 
+                id="input" 
+                placeholder="Type your answer here... Try to sound like an AI!" 
+                rows="6" 
+                maxlength="500"
+            ></textarea>
+            <input type="submit" value="Submit Answer">
         </form>
+    </div>
 
-
-
-
-    </body>
-
-
-
-
-
-    </html>
+    <script type="module" src="scripts/game.js"></script>
+</body>
+</html>

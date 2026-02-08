@@ -3,58 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/home.css">
+    <title>MafAI - Home</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/home.css">
 </head>
 
 <body>
-
     <main>
-
-
+        <!-- First page - Join Game -->
         <section class="page page1">
-
             <div id="nav">
-                <h1 id="title">MafAI </h1>
+                <h1 id="title">MafAI</h1>
                 <h1 id="host">Host Room</h1>
             </div>
 
-
-            <h2 id="roomNumberText">Enter Room Number</h2>
+            <h2 id="roomNumberText">Enter Room Code</h2>
 
             <form id="joinForm">
-                <input  id="roomID" type="text" placeholder="40293">
-                <input type="submit" value="Play!"></input>
+                <input id="roomID" type="text" placeholder="ABCD" maxlength="4">
+                <input type="submit" value="Join Game!">
             </form>
 
-
-            <p id="howToPlay">First TIme? Scroll to the page below!</p>
+            <p id="howToPlay">First Time? Scroll to the page below!</p>
         </section>
 
-        <!-- Second page -->
+        <!-- Second page - How to Play -->
         <section class="page page2">
             <div id="nav">
-                <h1>How to play</h1>
+                <h1 id="title">MafAI</h1>
             </div>
 
-            <p>
-                Too cultivated use solicitude frequently. Dashwood likewise up consider continue entrance ladyship oh. Wrong guest given purse power is no. Friendship to connection an am considered difficulty. Country met pursuit lasting moments why calling certain the. Middletons boisterous our way understood law. Among state cease how and sight since shall. Material did pleasure breeding our humanity she contempt had. So ye really mutual no cousin piqued summer result.
+            <h1 style="color: var(--accent); margin-bottom: 2rem;">How to Play</h1>
 
-                Kindness to he horrible reserved ye. Effect twenty indeed beyond for not had county. The use him without greatly can private. Increasing it unpleasant no of contrasted no continuing. Nothing colonel my no removed in weather. It dissimilar in up devonshire inhabiting.
-
-                So feel been kept be at gate. Be september it extensive oh concluded of certainty. In read most gate at body held it ever no. Talking justice welcome message inquiry in started of am me. Led own hearted highest visited lasting sir through compass his. Guest tiled he quick by so these trees am. It announcing alteration at surrounded comparison.
-
-               
-            </p>
+            <p style="max-width: 800px; line-height: 1.8;">
+                <strong>Welcome to MafAI!</strong><br><br>
                 
-
+                In this game, you and your friends will answer prompts while trying to figure out who among you isn't real. 
+                One player will secretly be an AI trying to blend in!<br><br>
+                
+                <strong>How it works:</strong><br>
+                1. Create a room or join one with a 4-letter code<br>
+                2. The game consists of 3 rounds<br>
+                3. Each round, everyone answers the same prompt<br>
+                4. Try to sound like an AI to fool others!<br>
+                5. Vote on who you think is the real AI<br>
+                6. Score points for guessing correctly or fooling others<br><br>
+                
+                <strong>Scoring:</strong><br>
+                • 100 points - Correctly identify the AI<br>
+                • 50 points - Fool another player into voting for you<br><br>
+                
+                The player with the most points after 3 rounds wins!
+            </p>
         </section>
-
-
     </main>
 
-    <script src="../scripts/JoinGame.js"></script>
-
+    <script src="scripts/JoinGame.js"></script>
 </body>
-
-
 </html>

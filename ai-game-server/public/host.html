@@ -3,38 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/home.css">
+    <title>MafAI - Host Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/home.css">
 </head>
 
 <body>
-
     <main>
-
-
         <section class="page page1">
-
             <div id="nav">
-                <h1 id="title">MafAI </h1>
-                <h1 id="host">Host Room</h1>
+                <h1 id="title">MafAI</h1>
             </div>
 
-
-            <h2 id="roomNumberText">Enter Host Name</h2>
+            <h2 id="roomNumberText">Create Your Room</h2>
 
             <form id="hostForm">
-                <input id="hostID" type="text" placeholder="Mark">
-                <input type="submit" value="Host!"></input>
+                <input type="submit" value="Create Game!">
             </form>
 
-
+            <p style="text-align: center; margin-top: 2rem; color: rgba(234, 234, 234, 0.6);">
+                A unique room code will be generated for your friends to join
+            </p>
         </section>
-
-
     </main>
 
-    <script src="../scripts/HostGame.js"></script>
-
+    <script src="scripts/HostGame.js"></script>
 </body>
-
-
 </html>

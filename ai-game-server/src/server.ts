@@ -66,39 +66,41 @@ app.get('/api/health', (req: Request, res: Response) => {
 // Create a new game
 app.post('/api/game/create', async (req: Request, res: Response) => {
     try {
-
-
         const { hostId } = req.body;
-
         if (!hostId) {
-
-      return res.status(400).json({ error: 'hostId is required' });
-    }
-
-    const gameCode = generateCode();
-    
-    await db.ref(`games/${gameCode}`).set({
-      status: 'lobby',
-      host: hostId,
-      players: {
-        [hostId]: { 
-          name: 'Player-1', 
-          score: 0, 
-          isAI: false, 
-          joinedAt: Date.now() 
+            return res.status(400).json({ error: 'hostId is required' });
         }
-      },
-      currentRound: 0,
-      createdAt: Date.now()
-    });
 
-    console.log(`Game created: ${gameCode} by host: ${hostId}`);
-    res.json({ gameCode, hostId });
+        const gameCode = generateCode();
+        
+        await db.ref(`games/${gameCode}`).set({
+            status: 'lobby',
+            host: hostId,
+            players: {
+                [hostId]: { 
+                    name: 'Player-1', 
+                    score: 0, 
+                    isAI: false, 
+                    joinedAt: Date.now() 
+                }
+            },
+            currentRound: 0,
+            createdAt: Date.now()
+        });
 
-  } catch (error) {
-    console.error('Error creating game:', error);
-    res.status(500).json({ error: 'Failed to create game' });
-  }
+        // ✅ VERIFY the write succeeded
+        const snapshot = await db.ref(`games/${gameCode}`).once('value');
+        if (!snapshot.exists()) {
+            throw new Error('Database write failed');
+        }
+
+        console.log(`Game created: ${gameCode} by host: ${hostId}`);
+        res.json({ gameCode, hostId });
+
+    } catch (error) {
+        console.error('Error creating game:', error);
+        res.status(500).json({ error: 'Failed to create game' });
+    }
 });
 
 // Join an existing game
