@@ -448,6 +448,8 @@ function showResults(game, round, results) {
     
     const aiPlayer = game.players[results.aiPlayerId];
     
+
+
     resultsContainer.innerHTML = `
         <div class="ai-reveal">
             <p>The AI was...</p>
@@ -508,7 +510,28 @@ function displayScores(players) {
 
 // Show final results
 function showFinalResults(game) {
-    document.getElementById('title').textContent = 'Game Over!';
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const playerId = urlParams.get('playerId');
+
+
+const winners = game.winners || [];
+
+    let winnerNames = winners.map(id => game.players[id]?.name || '???').join(' & ');
+    
+    for(let i = 0; i<winners.length; i++){
+    if(winners[i] == playerId){
+        winnerNames = winnerNames + " (You)"
+        document.getElementById('title').textContent = 'Winner!';
+         document.getElementById('title').style.color = "yellow";
+    }
+    else{
+        document.getElementById('title').textContent = 'Game Over!';
+
+    }
+}
+
+
     document.getElementById('wrapper').textContent = '';
     document.getElementById('playerAnswer').style.display = 'none';
     document.querySelector('.voting-container')?.remove();
@@ -518,13 +541,12 @@ function showFinalResults(game) {
     finalContainer.className = 'results-container';
     finalContainer.style.textAlign = 'center';
     
-    const winners = game.winners || [];
-    const winnerNames = winners.map(id => game.players[id]?.name || '???').join(' & ');
     
     finalContainer.innerHTML = `
         <div class="ai-reveal" style="border-color: var(--accent);">
             <p style="font-size: 1.5rem;">🏆 Winner 🏆</p>
-            <h2 style="color: var(--accent); font-size: 3rem;">${winnerNames}</h2>
+
+            <h2 style="color: var(--accent); font-size: 3rem;">${winnerNames }</h2>
             <p style="font-size: 1.2rem; margin-top: 1rem;">${game.winningScore || 0} points</p>
         </div>
         
@@ -558,6 +580,8 @@ function displayFinalScores(players) {
         .map(([id, data]) => ({ id, ...data }))
         .sort((a, b) => (b.score || 0) - (a.score || 0));
     
+
+
     container.innerHTML = sorted.map((player, index) => `
         <div class="score-row ${index === 0 ? 'rank-1' : ''}">
             <span class="score-name">
@@ -567,6 +591,11 @@ function displayFinalScores(players) {
             <span class="score-value">${player.score || 0}</span>
         </div>
     `).join('');
+
+
+    
+
+
 }
 
 
