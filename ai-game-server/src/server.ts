@@ -164,7 +164,6 @@ app.post('/api/game/start', async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'gameCode is required' });
     }
 
-        console.log(`Attempting to start game ${gameCode}...`);
 
     const gameRef = db.ref(`games/${gameCode}`);
     const snapshot = await gameRef.once('value');
@@ -233,7 +232,9 @@ app.post('/api/game/start', async (req: Request, res: Response) => {
 app.post('/api/game/submit', async (req: Request, res: Response) => {
   try {
     const { gameCode, round, playerId, answer } = req.body;
-    
+
+      console.log(`Received submission from player ${playerId} for game ${gameCode}, round ${round}`);
+
     if (!gameCode || !round || !playerId || !answer) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
@@ -315,7 +316,7 @@ app.post('/api/game/vote', async (req: Request, res: Response) => {
     
     if (!gameCode || !round || !voterId || !targetId) {
       return res.status(400).json({ error: 'Missing required fields' });
-    }
+      }
 
     const gameRef = db.ref(`games/${gameCode}`);
     const snapshot = await gameRef.once('value');

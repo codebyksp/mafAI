@@ -22,8 +22,9 @@ document.getElementById("startButton").addEventListener("click", async function 
 
     const urlParams = new URLSearchParams(window.location.search);
     const gameCode = urlParams.get('gameCode');
+    const playerId = urlParams.get('hostID') ;
 
-    console.log("Game Code:", gameCode);
+    console.log("plyerID", playerId);
 
     try {
 
@@ -36,8 +37,8 @@ document.getElementById("startButton").addEventListener("click", async function 
 
 
         if (response.ok) {
-            //send to game page.
-            window.location.href = `game.html?gameCode=${encodeURIComponent(gameCode)}`;
+            //send to game 
+            window.location.href = `game.html?gameCode=${encodeURIComponent(gameCode)}&playerId=${encodeURIComponent(playerId)}`;
         }
         else {
             alert("Failed to start game");

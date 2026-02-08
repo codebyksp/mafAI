@@ -19,7 +19,7 @@ document.getElementById('hostForm').addEventListener('submit', async function (e
             const response = await fetch('/api/game/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ hostId: hostID })
+                body: JSON.stringify({ hostId: hostID})
             });
 
             const data = await response.json();
