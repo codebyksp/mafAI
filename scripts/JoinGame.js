@@ -17,7 +17,7 @@ document.getElementById('joinForm').addEventListener('submit', async function (e
         const response = await fetch('http://localhost:3000/api/game/join', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ gameCode, playerId })
+            body: JSON.stringify({gameCode:gameCode, playerId: playerId })
         });
 
         const data = await response.json();

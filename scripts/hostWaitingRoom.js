@@ -5,10 +5,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const gameCode = urlParams.get('gameCode');
 
 
+    console.log("Game Code:", gameCode);
+
 
     // Display game code
 
-    document.getElementById('gameCode').textContent = `Game Code: ${gameCode}`;
+    document.getElementById('gameCode').innerHTML = `Game Code: ${gameCode}`;
     
 
 });
@@ -26,7 +28,7 @@ document.getElementById("startButton").addEventListener("click", async function 
         const response = await fetch('http://localhost:3000/api/game/start', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ hostID })
+            body: JSON.stringify({hostId : hostID})
         });
 
 
